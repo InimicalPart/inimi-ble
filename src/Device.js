@@ -23,7 +23,10 @@ class Device extends EventEmitter {
    * @returns {string}
    */
   async getName () {
-    return this.helper.prop('Name')
+    return this.helper.prop('Name').catch(() => {
+        console.warn(`[WARN] Could not find prop 'Name' for device ${this.getAddress()}`)
+        return;
+    }) ?? ''
   }
 
   /**
@@ -31,7 +34,10 @@ class Device extends EventEmitter {
    * @returns {string}
    */
   async getAddress () {
-    return this.helper.prop('Address')
+    return this.helper.prop('Address').catch(() => {
+        console.warn(`[WARN] Could not find prop 'Address' for device`)
+        return;
+    }) ?? ''
   }
 
   /**
@@ -39,7 +45,10 @@ class Device extends EventEmitter {
    * @returns {string}
    */
   async getAddressType () {
-    return this.helper.prop('AddressType')
+    return this.helper.prop('AddressType').catch(() => {
+        console.warn(`[WARN] Could not find prop 'AddressType' for device ${this.getAddress()}`)
+        return;
+    }) ?? ''
   }
 
   /**
@@ -47,7 +56,10 @@ class Device extends EventEmitter {
    * @returns {string}
    */
   async getAlias () {
-    return this.helper.prop('Alias')
+    return await this.helper.prop('Alias').catch(() => {
+        console.warn(`[WARN] Could not find prop 'Alias' for device ${this.getAddress()}`)
+        return;
+    }) ?? ''
   }
 
   /**
@@ -55,7 +67,10 @@ class Device extends EventEmitter {
    * @returns {number}
    */
   async getRSSI () {
-    return this.helper.prop('RSSI')
+    return await this.helper.prop('RSSI').catch(() => {
+        console.warn(`[WARN] Could not find prop 'RSSI' for device ${this.getAddress()}`)
+        return;
+    }) ?? 0
   }
 
   /**
@@ -63,7 +78,10 @@ class Device extends EventEmitter {
    * @returns {number}
    */
   async getTXPower () {
-    return this.helper.prop('TxPower')
+    return await this.helper.prop('TxPower').catch(() => {
+        console.warn(`[WARN] Could not find prop 'TxPower' for device ${this.getAddress()}`)
+        return;
+    }) ?? 0
   }
 
   /**
@@ -71,7 +89,10 @@ class Device extends EventEmitter {
    * @returns {Object.<string, any>}
    */
   async getManufacturerData () {
-    return parseDict(await this.helper.prop('ManufacturerData'))
+    return parseDict(await this.helper.prop('ManufacturerData').catch(() => {
+        console.warn(`[WARN] Could not find prop 'ManufacturerData' for device ${this.getAddress()}`)
+        return;
+    }) ?? {})
   }
 
   /**
@@ -79,7 +100,10 @@ class Device extends EventEmitter {
    * @returns {Object.<string, any>}
    */
   async getAdvertisingData () {
-    return parseDict(await this.helper.prop('AdvertisingData'))
+    return parseDict(await this.helper.prop('AdvertisingData').catch(() => {
+        console.warn(`[WARN] Could not find prop 'AdvertisingData' for device ${this.getAddress()}`)
+        return;
+    }) ?? {})
   }
 
 
@@ -88,7 +112,10 @@ class Device extends EventEmitter {
    * @returns {string[]}
    */
   async getUUIDs() {
-    return await this.helper.prop('UUIDs')
+    return await this.helper.prop('UUIDs').catch(() => {
+        console.warn(`[WARN] Could not find prop 'UUIDs' for device ${this.getAddress()}`)
+        return [];
+    }) ?? []
   }
 
   /**
@@ -96,7 +123,10 @@ class Device extends EventEmitter {
    * @returns {Object.<string, any>}
    */
   async getServiceData () {
-    return parseDict(await this.helper.prop('ServiceData'))
+    return parseDict(await this.helper.prop('ServiceData').catch(() => {
+        console.warn(`[WARN] Could not find prop 'ServiceData' for device ${this.getAddress()}`)
+        return;
+    }) ?? {})
   }
 
   /**
@@ -104,7 +134,10 @@ class Device extends EventEmitter {
    * @returns {boolean}
    */
   async isPaired () {
-    return this.helper.prop('Paired')
+    return await this.helper.prop('Paired').catch(() => {
+        console.warn(`[WARN] Could not find prop 'Paired' for device ${this.getAddress()}`)
+        return false;
+    })
   }
 
   /**
@@ -112,21 +145,30 @@ class Device extends EventEmitter {
    * @returns {boolean}
    */
   async isConnected () {
-    return this.helper.prop('Connected')
+    return await this.helper.prop('Connected').catch(() => {
+        console.warn(`[WARN] Could not find prop 'Connected' for device ${this.getAddress()}`)
+        return false;
+    })
   }
 
   /**
    * This method will connect to the remote device
    */
   async pair () {
-    return this.helper.callMethod('Pair')
+    return await this.helper.callMethod('Pair').catch(() => {
+        console.warn(`[WARN] Could not call method 'Pair' for device ${this.getAddress()}`)
+        return;
+    }) ?? false
   }
 
   /**
    * This method can be used to cancel a pairing operation initiated by the Pair method.
    */
   async cancelPair () {
-    return this.helper.callMethod('CancelPair')
+    return await this.helper.callMethod('CancelPair').catch(() => {
+        console.warn(`[WARN] Could not call method 'CancelPair' for device ${this.getAddress()}`)
+        return;
+    }) ?? false
   }
 
   /**
@@ -152,7 +194,10 @@ class Device extends EventEmitter {
    * Disconnect remote device
    */
   async disconnect () {
-    await this.helper.callMethod('Disconnect')
+    await this.helper.callMethod('Disconnect').catch(() => {
+        console.warn(`[WARN] Could not call method 'Disconnect' for device ${this.getAddress()}`)
+        return;
+    }) ?? false
     this.helper.removeListeners()
   }
 
@@ -171,8 +216,8 @@ class Device extends EventEmitter {
    * @returns {string}
    */
   async toString () {
-    const name = await this.getName()
-    const address = await this.getAddress()
+    const name = this.getName()
+    const address = this.getAddress()
 
     return `${name} [${address}]`
   }
