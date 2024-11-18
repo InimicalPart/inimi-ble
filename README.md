@@ -1,5 +1,27 @@
 # inimi-ble (a modified version of node-ble)
-A small rewrite of node-ble by chrvadala to get UUIDs without connecting to the device
+
+> [!WARNING]
+> This library is a modified version of [node-ble](https://www.npmjs.com/package/node-ble).
+> Please look at the [Changes](https://github.com/InimicalPart/inimi-ble/?tab=readme-ov-file#changes) section of this README file to understand the changes between this library and [node-ble](https://www.npmjs.com/package/node-ble).
+>
+> This version will not be maintained. For any changes, fork this repository and make changes yourself. You can create a pull-request if you want to add your changes to this version, but there is no guarantee that your pull-request will be looked at, or merged.
+
+## Changes
+The differences between this library and [node-ble](https://www.npmjs.com/package/node-ble) are:
+- Getting service UUIDs of unconnected devices
+  > A functionality has been added where you can get service UUIDs of devices that are not connected using the "UUIDs" prop in Bluez
+  - Reason: **A special project I was working on required getting the UUIDs of services for unconnected devices, to know whether or not that device was the device the program was searching for.**
+- Increased stability of getting props for devices
+  > A change has been made to the functions that fetch the props from Bluez. Without these changes, the program would crash if a prop you were trying to retrieve was missing. With these changes, the library will catch the error and announce it to the console, but at the same time return a default value.
+  - Reason: **Crashes are annoying and were breaking the stability of other projects.**
+
+<br/>
+<br/>
+<br/>
+
+> [!NOTE]
+> Below this line, you will find the README file for the original [node-ble](https://www.npmjs.com/package/node-ble) library.
+<hr/>
 
 # node-ble
 Bluetooth Low Energy (BLE) library written with pure Node.js (no bindings) - baked by Bluez via DBus
